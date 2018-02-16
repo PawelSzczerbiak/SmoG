@@ -209,17 +209,17 @@ public class StationAdapter extends ArrayAdapter<Station> {
      */
     private int getTypeColor(String type) {
         switch (type) {
-            case "Ważne miejscowości":
+            case DataRepository.IMPORTANT_CITIES:
                 return R.color.colorImportantCities;
-            case "Podhale":
+            case DataRepository.PODHALE:
                 return R.color.colorPodhale;
-            case "Beskidy Zachodnie":
+            case DataRepository.BESKIDY_ZACH:
                 return R.color.colorBeskidyZachodnie;
-            case "Beskidy Wschodnie":
+            case DataRepository.BESKIDY_WSCH:
                 return R.color.colorBeskidyWschodnie;
-            case "Sudety":
+            case DataRepository.SUDETY:
                 return R.color.colorSudety;
-            case "Jura":
+            case DataRepository.JURA:
                 return R.color.colorJura;
         }
         return R.color.colorValueNone;
@@ -230,17 +230,17 @@ public class StationAdapter extends ArrayAdapter<Station> {
      */
     private int getTypeText(String type) {
         switch (type) {
-            case "Ważne miejscowości":
+            case DataRepository.IMPORTANT_CITIES:
                 return R.string.stringImportantCities;
-            case "Podhale":
+            case DataRepository.PODHALE:
                 return R.string.stringPodhale;
-            case "Beskidy Zachodnie":
+            case DataRepository.BESKIDY_ZACH:
                 return R.string.stringBeskidyZachodnie;
-            case "Beskidy Wschodnie":
+            case DataRepository.BESKIDY_WSCH:
                 return R.string.stringBeskidyWschodnie;
-            case "Sudety":
+            case DataRepository.SUDETY:
                 return R.string.stringSudety;
-            case "Jura":
+            case DataRepository.JURA:
                 return R.string.stringJura;
         }
         return R.string.no_data;

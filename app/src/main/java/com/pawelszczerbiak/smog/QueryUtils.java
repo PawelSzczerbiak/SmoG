@@ -15,7 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,50 +33,12 @@ public class QueryUtils {
 
     public static List<Station> extractStations(String URL_BASE) {
 
+        // List of stations' IDs
+        final List<StationID> stationIDs = DataRepository.getStationIDs();
         // List of stations to be returned
         final List<Station> stations = new ArrayList<>();
 
-        /**
-         * List with stations IDs to be added to {@link URL_BASE}
-         * Locations are displayed according to their insertion below
-         */
-        final List<StationID> stationsID = new ArrayList<>();
-
-        stationsID.add(new StationID("Kraków ul. Bujaka", "Ważne miejscowości", Arrays.asList(2772, 2770, 17896, 2774, 2766)));
-        stationsID.add(new StationID("Kraków al. Krasińskiego", "Ważne miejscowości", Arrays.asList(2752, 2750, 16500, 2747)));
-        stationsID.add(new StationID("Kraków ul. Bulwarowa", "Ważne miejscowości", Arrays.asList(2794, 2792, 2779, 2797, 2788)));
-//        stationsData.put("Kraków ul. Dietla", Arrays.asList(16377, 16516));
-        stationsID.add(new StationID("Tarnów", "Ważne miejscowości", Arrays.asList(3070, 3073, 3066)));
-        stationsID.add(new StationID("Zgierz", "Ważne miejscowości", Arrays.asList(2378, 2377, 2382, 2373)));
-
-        stationsID.add(new StationID("Nowy Targ", "Podhale", Arrays.asList(16905, 16904)));
-        stationsID.add(new StationID("Nowy Sącz", "Podhale", Arrays.asList(2941, 2944, 2938)));
-        stationsID.add(new StationID("Zakopane", "Podhale", Arrays.asList(3195, 16706, 3198, 3191)));
-
-        stationsID.add(new StationID("Sucha Beskidzka", "Beskidy Zachodnie", Arrays.asList(16498)));
-        stationsID.add(new StationID("Żywiec", "Beskidy Zachodnie", Arrays.asList(14916, 14915, 14917)));
-        stationsID.add(new StationID("Bielsko-Biała", "Beskidy Zachodnie", Arrays.asList(5167, 5171, 5162)));
-        stationsID.add(new StationID("Ustroń", "Beskidy Zachodnie", Arrays.asList(5515, 5516, 5512)));
-        stationsID.add(new StationID("Cieszyn", "Beskidy Zachodnie", Arrays.asList(5212, 5216, 5208)));
-
-        stationsID.add(new StationID("Przemyśl", "Beskidy Wschodnie", Arrays.asList(4338, 4336, 14771, 4339, 4333)));
-        stationsID.add(new StationID("Rymanów Zdrój", "Beskidy Wschodnie",Arrays.asList(17185, 17184)));
-//        stationsID.add(new StationID("Krempna","Beskidy Wschodnie", Arrays.asList(14751, 14753)));
-//        stationsID.add(new StationID("Szymbark","Beskidy Wschodnie", Arrays.asList(3058, 3055)));
-
-//        stationsID.add(new StationID("Czerniawa", "Sudety", Arrays.asList(56, 50)));
-        stationsID.add(new StationID("Wałbrzych","Sudety", Arrays.asList(618, 605, 621, 614)));
-        stationsID.add(new StationID("Kłodzko", "Sudety",Arrays.asList(224, 225, 221)));
-        stationsID.add(new StationID("Nowa Ruda","Sudety", Arrays.asList(14706)));
-        stationsID.add(new StationID("Jelenia Góra","Sudety", Arrays.asList(14731, 14730, 14734, 14733, 14727)));
-
-//        stationsID.add(new StationID("Złoty Potok", "Jura", Arrays.asList(5619, 5618, 5600, 5623, 5612)));
-//        stationsID.add(new StationID("Częstochowa","Jura", Arrays.asList(5232	, 5233, 5230)));
-//        stationsID.add(new StationID("Trzebinia","Jura", Arrays.asList(3123, 3127, 3120)));
-//        stationsID.add(new StationID("Olkusz","Jura", Arrays.asList(2976)));
-//        stationsID.add(new StationID("Starachowice","Jura", Arrays.asList(17249)));
-
-        for (StationID stationID : stationsID) {
+        for (StationID stationID : stationIDs) {
 
             // List of JSON responses for URLs created from IDs
             List<String> jsonResponses = new ArrayList<>();

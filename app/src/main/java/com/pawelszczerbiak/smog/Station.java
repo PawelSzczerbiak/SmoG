@@ -19,7 +19,6 @@ public class Station {
     public Station(String location, String type, Map<String, String> dates, Map<String, Double> pollutions) {
         this.location = location;
         this.type = type;
-
         this.dates = dates;
         this.pollutions = pollutions;
     }
