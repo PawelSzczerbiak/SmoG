@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:orientation="horizontal"
+    android:paddingEnd="16dp"
+    android:paddingRight="16dp">
+
+    <LinearLayout
+        android:id="@+id/stationInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingLeft="6dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/type"
+                android:layout_width="@dimen/textWidthTypeLabel"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:text="@string/stringBeskidyWschodnie"
+                android:textColor="@color/textColorLocation"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:text="16:00"
+                android:textAllCaps="true"
+                android:textColor="@color/textColorDate"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Kraków ul.Bujaka"
+            android:textColor="@color/textColorLocation"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/label_PM25"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/layoutMarginTopPollutionLabel"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="PM2.5"
+            android:textAllCaps="true"
+            android:textColor="@color/textColorValueDefault"
+            android:textSize="@dimen/textSizePollutionLabel" />
+
+        <TextView
+            android:id="@+id/val_PM25"
+            android:layout_width="40dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/magnitude_rectangle"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/no_data"
+            android:textColor="@color/textColorValueDefault"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/label_PM10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/layoutMarginTopPollutionLabel"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="PM10"
+            android:textAllCaps="true"
+            android:textColor="@color/textColorValueDefault"
+            android:textSize="@dimen/textSizePollutionLabel" />
+
+        <TextView
+            android:id="@+id/val_PM10"
+            android:layout_width="40dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/magnitude_rectangle"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/no_data"
+            android:textColor="@color/textColorValueDefault"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/label_C6H6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/layoutMarginTopPollutionLabel"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="C6H6"
+            android:textAllCaps="true"
+            android:textColor="@color/textColorValueDefault"
+            android:textSize="@dimen/textSizePollutionLabel" />
+
+        <TextView
+            android:id="@+id/val_C6H6"
+            android:layout_width="40dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/magnitude_rectangle"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/no_data"
+            android:textColor="@color/textColorValueDefault"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/label_SO2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/layoutMarginTopPollutionLabel"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="SO2"
+            android:textAllCaps="true"
+            android:textColor="@color/textColorValueDefault"
+            android:textSize="@dimen/textSizePollutionLabel" />
+
+        <TextView
+            android:id="@+id/val_SO2"
+            android:layout_width="40dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/magnitude_rectangle"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/no_data"
+            android:textColor="@color/textColorValueDefault"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/label_NO2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/layoutMarginTopPollutionLabel"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="NO2"
+            android:textAllCaps="true"
+            android:textColor="@color/textColorValueDefault"
+            android:textSize="@dimen/textSizePollutionLabel" />
+
+        <TextView
+            android:id="@+id/val_NO2"
+            android:layout_width="40dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/magnitude_rectangle"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/no_data"
+            android:textColor="@color/textColorValueDefault"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</LinearLayout>

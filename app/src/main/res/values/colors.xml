@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!-- Background color for very good air quality -->
+    <color name="colorValueVeryGood">#58b107</color>
+
+    <!-- Background color for good air quality -->
+    <color name="colorValueGood">#b0dd10</color>
+
+    <!-- Background color for moderate air quality -->
+    <color name="colorValueModerate">#feda12</color>
+
+    <!-- Background color for sufficient air quality -->
+    <color name="colorValueSufficient">#e48102</color>
+
+    <!-- Background color for bad air quality -->
+    <color name="colorValueBad">#e50000</color>
+
+    <!-- Background color for very bad air quality -->
+    <color name="colorValueVeryBad">#990100</color>
+
+    <!-- Background color if there are no data -->
+    <color name="colorValueNone">#EEEEEE</color>
+
+    <!-- Text color for the location -->
+    <color name="textColorLocation">#17202A</color>
+
+    <!-- Text color for the date -->
+    <color name="textColorDate">#707B7C</color>
+
+    <!-- Text color for the air quality value -->
+    <color name="textColorValue">#FDFEFE</color>
+
+    <!-- Default ext color for the air quality value -->
+    <color name="textColorValueDefault">#707B7C</color>
+
+    <!-- Colors for different locations' types -->
+    <color name="colorImportantCities">#c1203b</color>
+    <color name="colorPodhale">#e2bf0d</color>
+    <color name="colorBeskidyZachodnie">#5773d6</color>
+    <color name="colorBeskidyWschodnie">#c65319</color>
+    <color name="colorSudety">#58b107</color>
+    <color name="colorJura">#82755c</color>
+
+</resources>

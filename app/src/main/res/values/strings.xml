@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SmoG</string>
+    <string name="no_stations">Brak wybranych stacji</string>
+    <string name="no_internet">Brak połączenia internetowego</string>
+    <string name="no_data">b.d.</string>
+
+    <string name="stringImportantCities">Ważne</string>
+    <string name="stringPodhale">Podhale</string>
+    <string name="stringBeskidyZachodnie">Beskidy Zach.</string>
+    <string name="stringBeskidyWschodnie">Beskidy Wsch.</string>
+    <string name="stringSudety">Sudety</string>
+    <string name="stringJura">Jura</string>
+</resources>

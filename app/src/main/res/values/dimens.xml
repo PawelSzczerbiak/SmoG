@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="textSizePollutionLabel">9dp</dimen>
+    <dimen name="textWidthTypeLabel">90dp</dimen>
+    <dimen name="layoutMarginTopPollutionLabel">2dp</dimen>
+</resources>
