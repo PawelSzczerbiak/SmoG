@@ -1,8 +1,10 @@
 package com.pawelszczerbiak.smog;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,7 +40,7 @@ public class StationAdapter extends ArrayAdapter<Station> {
                     R.layout.station_list_item, parent, false);
         }
 
-        Station currentStation = getItem(position);
+        final Station currentStation = getItem(position);
 
         Map<String, String> dates = currentStation.getDates();
         Map<String, Double> pollutions = currentStation.getPollutions();
@@ -98,6 +101,18 @@ public class StationAdapter extends ArrayAdapter<Station> {
                     break;
             }
         }
+
+        /**
+         * Action performed after clicking
+         */
+        listItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent plotIntent = new Intent(getContext(), PlotActivity.class);
+                plotIntent.putExtra("station", currentStation);
+                getContext().startActivities(new Intent[]{plotIntent});
+            }
+        });
 
         // Return the list item view that is now showing the appropriate data
         return listItemView;

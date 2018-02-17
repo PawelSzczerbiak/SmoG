@@ -1,5 +1,6 @@
 package com.pawelszczerbiak.smog;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.TreeMap;
  * An {@link Station} object contains information
  * related to a single station
  */
-public class Station {
+public class Station implements Serializable {
 
     private String location;
     private String type;

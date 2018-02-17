@@ -26,7 +26,7 @@ public class DataRepository {
          */
         stationIDs.add(new StationID("Kraków ul. Bujaka", IMPORTANT_CITIES, Arrays.asList(2772, 2770, 17896, 2774, 2766)));
         stationIDs.add(new StationID("Kraków al. Krasińskiego", IMPORTANT_CITIES, Arrays.asList(2752, 2750, 16500, 2747)));
-        stationIDs.add(new StationID("Kraków ul. Bulwarowa", IMPORTANT_CITIES, Arrays.asList(2794, 2792, 2779, 2797, 2788)));
+ /*       stationIDs.add(new StationID("Kraków ul. Bulwarowa", IMPORTANT_CITIES, Arrays.asList(2794, 2792, 2779, 2797, 2788)));
 //        stationsData.put("Kraków ul. Dietla", IMPORTANT_CITIES, Arrays.asList(16377, 16516));
         stationIDs.add(new StationID("Tarnów", IMPORTANT_CITIES, Arrays.asList(3070, 3073, 3066)));
         stationIDs.add(new StationID("Zgierz", IMPORTANT_CITIES, Arrays.asList(2378, 2377, 2382, 2373)));
@@ -51,7 +51,7 @@ public class DataRepository {
         stationIDs.add(new StationID("Kłodzko", SUDETY, Arrays.asList(224, 225, 221)));
         stationIDs.add(new StationID("Nowa Ruda", SUDETY, Arrays.asList(14706)));
         stationIDs.add(new StationID("Jelenia Góra", SUDETY, Arrays.asList(14731, 14730, 14734, 14733, 14727)));
-
+*/
 //        stationIDs.add(new StationID("Złoty Potok", JURA, Arrays.asList(5619, 5618, 5600, 5623, 5612)));
 //        stationIDs.add(new StationID("Częstochowa",JURA, Arrays.asList(5232	, 5233, 5230)));
 //        stationIDs.add(new StationID("Trzebinia",JURA, Arrays.asList(3123, 3127, 3120)));
