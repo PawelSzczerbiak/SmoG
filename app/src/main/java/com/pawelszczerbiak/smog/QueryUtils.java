@@ -163,7 +163,6 @@ public class QueryUtils {
                 String key = root.getString("key");
                 JSONArray values = root.getJSONArray("values");
                 // values for specific dates (we retrieve up to 10)
-                byte err = 0;
                 for (int i = 0; i < values.length(); i++) {
                     JSONObject value = values.getJSONObject(i);
                     if (!value.isNull("value")) {
@@ -175,10 +174,6 @@ public class QueryUtils {
                             pollutions.get(key).set(0, val);
                         } else {
                             pollutions.get(key).add(val);
-                        }
-                        err++;
-                        if (err == 10) {
-                            break;
                         }
                     }
                 }

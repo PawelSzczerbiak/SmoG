@@ -23,7 +23,7 @@ public class StationActivity extends AppCompatActivity implements LoaderManager.
     private static final int STATION_LOADER_ID = 1;
 
     /**
-     * {@link URL_BASE} URL with JSON data
+     * URL with JSON data
      * At the end of the URL id must be added (see @extractStations method)
      */
     private static final String URL_BASE = "http://api.gios.gov.pl/pjp-api/rest/data/getData/";
