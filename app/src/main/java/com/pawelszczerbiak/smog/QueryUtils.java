@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,11 @@ public class QueryUtils {
     //Tag for the log messages
     public static final String LOG_TAG = StationActivity.class.getSimpleName();
 
+    public static final double POLLUTION_DEFAULT_VALUE = -1.;
+
     // Private constructor - no one should ever create an object of this class
-    private QueryUtils() {}
+    private QueryUtils() {
+    }
 
     public static List<Station> extractStations(String URL_BASE) {
 
@@ -141,16 +145,16 @@ public class QueryUtils {
     }
 
     /**
-     *  Extracts data from JSON for a given station
+     * Extracts data from JSON for a given station
      */
     private static Station extractFeaturesFromJson(String location, String type, List<String> jsonResponses) {
 
         // Elements ordered according to their insertion
         // see ordering in: @initializePollutions
-        Map<String, String> dates = new LinkedHashMap<>();
-        Map<String, Double> pollutions = new LinkedHashMap<>();
-        // Pollutions' map initialization
-        initializePollutions(pollutions);
+        Map<String, List<String>> dates = new LinkedHashMap<>();
+        Map<String, List<Double>> pollutions = new LinkedHashMap<>();
+        // Maps initialization
+        initializeMaps(pollutions, dates);
 
         for (String jsonResponse : jsonResponses) {
             try {
@@ -158,19 +162,26 @@ public class QueryUtils {
                 // possibilities: PM2.5, PM10, SO2, NO2, C6H6
                 String key = root.getString("key");
                 JSONArray values = root.getJSONArray("values");
-                // values for specific dates
+                // values for specific dates (we retrieve up to 10)
+                byte err = 0;
                 for (int i = 0; i < values.length(); i++) {
                     JSONObject value = values.getJSONObject(i);
                     if (!value.isNull("value")) {
                         String date = value.getString("date");
+                        dates.get(key).add(date);
                         double val = value.getDouble("value");
-                        pollutions.put(key, val);
-                        dates.put(key, date);
-                        // we took the first not-null value
-                        break;
+                        // Replacing the first element
+                        if (pollutions.get(key).get(0) == POLLUTION_DEFAULT_VALUE) {
+                            pollutions.get(key).set(0, val);
+                        } else {
+                            pollutions.get(key).add(val);
+                        }
+                        err++;
+                        if (err == 10) {
+                            break;
+                        }
                     }
                 }
-
             } catch (JSONException e) {
                 Log.e("QueryUtils", "Problem parsing the JSON results", e);
             }
@@ -179,13 +190,20 @@ public class QueryUtils {
         return new Station(location, type, dates, pollutions);
     }
 
-    // Initialize pollutions for a given station with negative values
-    private static void initializePollutions(Map<String, Double> pollutions) {
-        pollutions.put("PM2.5", -1.);
-        pollutions.put("PM10", -1.);
-        pollutions.put("C6H6", -1.);
-        pollutions.put("SO2", -1.);
-        pollutions.put("NO2", -1.);
+    /**
+     * Initialize pollutions for a given station with negative values
+     */
+    private static void initializeMaps(Map<String, List<Double>> pollutions, Map<String, List<String>> dates) {
+        pollutions.put("PM2.5", new ArrayList<>(Arrays.asList(POLLUTION_DEFAULT_VALUE)));
+        pollutions.put("PM10", new ArrayList<>(Arrays.asList(POLLUTION_DEFAULT_VALUE)));
+        pollutions.put("C6H6", new ArrayList<>(Arrays.asList(POLLUTION_DEFAULT_VALUE)));
+        pollutions.put("SO2", new ArrayList<>(Arrays.asList(POLLUTION_DEFAULT_VALUE)));
+        pollutions.put("NO2", new ArrayList<>(Arrays.asList(POLLUTION_DEFAULT_VALUE)));
+        dates.put("PM2.5", new ArrayList<String>());
+        dates.put("PM10", new ArrayList<String>());
+        dates.put("C6H6", new ArrayList<String>());
+        dates.put("SO2", new ArrayList<String>());
+        dates.put("NO2", new ArrayList<String>());
     }
 
 }

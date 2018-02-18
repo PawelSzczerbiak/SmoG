@@ -9,6 +9,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.util.List;
 import java.util.Map;
 
 public class PlotActivity extends AppCompatActivity {
@@ -20,7 +21,7 @@ public class PlotActivity extends AppCompatActivity {
 
         Station station = (Station) getIntent().getSerializableExtra("station");
 
-        Map<String, Double> pollutions = station.getPollutions();
+        Map<String, List<Double>> pollutions = station.getPollutions();
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
@@ -28,7 +29,7 @@ public class PlotActivity extends AppCompatActivity {
                 new DataPoint(1, 5),
                 new DataPoint(2, 3),
                 new DataPoint(3, 2),
-                new DataPoint(4, pollutions.get(("PM2.5")))
+                new DataPoint(4, pollutions.get("PM2.5").get(0))
         });
         graph.addSeries(series);
     }

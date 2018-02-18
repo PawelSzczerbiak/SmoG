@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -42,18 +44,23 @@ public class StationAdapter extends ArrayAdapter<Station> {
 
         final Station currentStation = getItem(position);
 
-        Map<String, String> dates = currentStation.getDates();
-        Map<String, Double> pollutions = currentStation.getPollutions();
+        // We join all dates' lists together
+        // The first value, if exists, will be displayed on the screen
+        List<String> dates = new ArrayList<>();
+        for(List<String> list : currentStation.getDates().values()){
+            dates.addAll(list);
+        }
+        Map<String, List<Double>> pollutions = currentStation.getPollutions();
         String type = currentStation.getType();
 
         // Views to be changed
-        TextView locationView = (TextView) listItemView.findViewById(R.id.location);
-        TextView dateView = (TextView) listItemView.findViewById(R.id.date);
+        TextView locationView = listItemView.findViewById(R.id.location);
+        TextView dateView = listItemView.findViewById(R.id.date);
         // OLD IDEA: Changes layout color depending on the station's type
         // LinearLayout stationInfoLayout = (LinearLayout) listItemView.findViewById(R.id.stationInfo);
         // stationInfoLayout.setBackgroundColor(ContextCompat.getColor(getContext(), getLayoutColor(type)));
         // NEW IDEA: Changes text and text color of the station's type label
-        TextView typeView = (TextView) listItemView.findViewById(R.id.type);
+        TextView typeView = listItemView.findViewById(R.id.type);
         typeView.setText(getTypeText(type));
         typeView.setTextColor(ContextCompat.getColor(getContext(), getTypeColor(type)));
 
@@ -63,8 +70,7 @@ public class StationAdapter extends ArrayAdapter<Station> {
          * Note: dates are ordered according to IDs @stationsData
          * but we can change ordering by initialization the data map
          */
-        Map.Entry<String, String> firstDate = dates.entrySet().iterator().next();
-        String formattedDate = formatDate(firstDate.getValue());
+        String formattedDate = (dates.size()==0) ? "" : formatDate(dates.get(0));
         // Insert formatted data into the views
         locationView.setText(currentStation.getLocation());
         dateView.setText(formattedDate);
@@ -75,27 +81,27 @@ public class StationAdapter extends ArrayAdapter<Station> {
         for (String key : pollutions.keySet()) {
             switch (key) {
                 case "PM2.5":
-                    changePollutionView(listItemView, pollutions.get(key),
+                    changePollutionView(listItemView, pollutions.get(key).get(0),
                             R.id.val_PM25, R.id.label_PM25,
                             PollutionNorms.TABLE_REF_PM25, PollutionNorms.NORM_PM25);
                     break;
                 case "PM10":
-                    changePollutionView(listItemView, pollutions.get(key),
+                    changePollutionView(listItemView, pollutions.get(key).get(0),
                             R.id.val_PM10, R.id.label_PM10,
                             PollutionNorms.TABLE_REF_PM10, PollutionNorms.NORM_PM10);
                     break;
                 case "C6H6":
-                    changePollutionView(listItemView, pollutions.get(key),
+                    changePollutionView(listItemView, pollutions.get(key).get(0),
                             R.id.val_C6H6, R.id.label_C6H6,
                             PollutionNorms.TABLE_REF_C6H6, PollutionNorms.NORM_C6H6);
                     break;
                 case "SO2":
-                    changePollutionView(listItemView, pollutions.get(key),
+                    changePollutionView(listItemView, pollutions.get(key).get(0),
                             R.id.val_SO2, R.id.label_SO2,
                             PollutionNorms.TABLE_REF_SO2, PollutionNorms.NORM_SO2);
                     break;
                 case "NO2":
-                    changePollutionView(listItemView, pollutions.get(key),
+                    changePollutionView(listItemView, pollutions.get(key).get(0),
                             R.id.val_NO2, R.id.label_NO2,
                             PollutionNorms.TABLE_REF_NO2, PollutionNorms.NORM_NO2);
                     break;
@@ -123,8 +129,8 @@ public class StationAdapter extends ArrayAdapter<Station> {
      */
     private void changePollutionView(View listItemView, double pollutionValue, int idValue, int idLabel, int[] tableRef, int norm) {
         // Views to be changed
-        TextView valueView = (TextView) listItemView.findViewById(idValue);
-        TextView labelView = (TextView) listItemView.findViewById(idLabel);
+        TextView valueView = listItemView.findViewById(idValue);
+        TextView labelView = listItemView.findViewById(idLabel);
         // Rectangle for specific pollutionValue
         GradientDrawable valueRectangle = (GradientDrawable) valueView.getBackground();
         // Get the appropriate background color based on the current pollutionValue
