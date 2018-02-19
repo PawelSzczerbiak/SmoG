@@ -47,7 +47,7 @@ public class StationAdapter extends ArrayAdapter<Station> {
         // We join all dates' lists together
         // The first value, if exists, will be displayed on the screen
         List<String> dates = new ArrayList<>();
-        for(List<String> list : currentStation.getDates().values()){
+        for (List<String> list : currentStation.getDates().values()) {
             dates.addAll(list);
         }
         Map<String, List<Double>> pollutions = currentStation.getPollutions();
@@ -70,7 +70,7 @@ public class StationAdapter extends ArrayAdapter<Station> {
          * Note: dates are ordered according to IDs @stationsData
          * but we can change ordering by initialization the data map
          */
-        String formattedDate = (dates.size()==0) ? "" : formatDate(dates.get(0));
+        String formattedDate = (dates.size() == 0) ? "" : formatDate(dates.get(0));
         // Insert formatted data into the views
         locationView.setText(currentStation.getLocation());
         dateView.setText(formattedDate);
@@ -149,31 +149,34 @@ public class StationAdapter extends ArrayAdapter<Station> {
      * Formats value
      */
     private String formatValue(double value, int norm) {
-        if (value >= 0)
+        if (value >= 0) {
             return String.valueOf((int) Math.round(100.0 * value / norm)) + "%";
-        else
+        } else {
             return String.valueOf(R.string.no_data);
+        }
     }
 
     /**
      * Gives text color for specific value
      */
     private int getValueTextColor(double value) {
-        if (value >= 0)
+        if (value >= 0) {
             return R.color.textColorValue;
-        else
+        } else {
 //         return R.color.textColorValueDefault;
             return R.color.colorValueNone;
+        }
     }
 
     /**
      * Gives text color for specific label
      */
     private int getLabelTextColor(double value) {
-        if (value >= 0)
+        if (value >= 0) {
             return R.color.textColorValueDefault;
-        else
+        } else {
             return R.color.colorValueNone;
+        }
     }
 
     /**
@@ -190,7 +193,6 @@ public class StationAdapter extends ArrayAdapter<Station> {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         // New date format
         DateFormat newFormat = new SimpleDateFormat("HH:mm");
         String newDateString = newFormat.format(oldDate);
@@ -205,24 +207,21 @@ public class StationAdapter extends ArrayAdapter<Station> {
      * @param tableRef reference table for colors
      */
     private int getValueColor(double value, int[] tableRef) {
-        int valueColorResourceId;
         int valueRound = (int) Math.round(value);
         if (valueRound > tableRef[4]) // very bad
-            valueColorResourceId = ContextCompat.getColor(getContext(), R.color.colorValueVeryBad);
+            return ContextCompat.getColor(getContext(), R.color.colorValueVeryBad);
         else if (valueRound > tableRef[3]) // bad
-            valueColorResourceId = ContextCompat.getColor(getContext(), R.color.colorValueBad);
+            return ContextCompat.getColor(getContext(), R.color.colorValueBad);
         else if (valueRound > tableRef[2]) // sufficient
-            valueColorResourceId = ContextCompat.getColor(getContext(), R.color.colorValueSufficient);
+            return ContextCompat.getColor(getContext(), R.color.colorValueSufficient);
         else if (valueRound > tableRef[1]) // moderate
-            valueColorResourceId = ContextCompat.getColor(getContext(), R.color.colorValueModerate);
+            return ContextCompat.getColor(getContext(), R.color.colorValueModerate);
         else if (valueRound > tableRef[0]) // good
-            valueColorResourceId = ContextCompat.getColor(getContext(), R.color.colorValueGood);
+            return ContextCompat.getColor(getContext(), R.color.colorValueGood);
         else if (valueRound >= 0) // very good
-            valueColorResourceId = ContextCompat.getColor(getContext(), R.color.colorValueVeryGood);
+            return ContextCompat.getColor(getContext(), R.color.colorValueVeryGood);
         else // if there is a problem e.g. negative value
-            valueColorResourceId = ContextCompat.getColor(getContext(), R.color.colorValueNone);
-
-        return valueColorResourceId;
+            return ContextCompat.getColor(getContext(), R.color.colorValueNone);
     }
 
     /**
@@ -242,8 +241,9 @@ public class StationAdapter extends ArrayAdapter<Station> {
                 return R.color.colorSudety;
             case DataRepository.JURA:
                 return R.color.colorJura;
+            default:
+                return R.color.colorValueNone;
         }
-        return R.color.colorValueNone;
     }
 
     /**
@@ -263,7 +263,8 @@ public class StationAdapter extends ArrayAdapter<Station> {
                 return R.string.stringSudety;
             case DataRepository.JURA:
                 return R.string.stringJura;
+            default:
+                return R.string.no_data;
         }
-        return R.string.no_data;
     }
 }

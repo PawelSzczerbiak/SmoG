@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -149,10 +150,9 @@ public class QueryUtils {
      */
     private static Station extractFeaturesFromJson(String location, String type, List<String> jsonResponses) {
 
-        // Elements ordered according to their insertion
-        // see ordering in: @initializePollutions
+        // In dates elements are ordered according to their insertion
         Map<String, List<String>> dates = new LinkedHashMap<>();
-        Map<String, List<Double>> pollutions = new LinkedHashMap<>();
+        Map<String, List<Double>> pollutions = new HashMap<>();
         // Maps initialization
         initializeMaps(pollutions, dates);
 
@@ -167,7 +167,7 @@ public class QueryUtils {
                     JSONObject value = values.getJSONObject(i);
                     if (!value.isNull("value")) {
                         String date = value.getString("date");
-                        dates.get(key).add(date);
+                        dates.get(key).add(date); // TODO: more efficient
                         double val = value.getDouble("value");
                         // Replacing the first element
                         if (pollutions.get(key).get(0) == POLLUTION_DEFAULT_VALUE) {

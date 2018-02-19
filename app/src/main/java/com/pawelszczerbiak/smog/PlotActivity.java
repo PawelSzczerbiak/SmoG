@@ -1,6 +1,8 @@
 package com.pawelszczerbiak.smog;
 
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,12 +16,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.pawelszczerbiak.smog.QueryUtils.POLLUTION_DEFAULT_VALUE;
 
 public class PlotActivity extends AppCompatActivity {
 
@@ -28,96 +31,160 @@ public class PlotActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.plot_activity);
 
+        // Available graphs (plots)
         GraphView graph_today = findViewById(R.id.graph_today);
         GraphView graph_yesterday = findViewById(R.id.graph_yesterday);
         GraphView graph_before_yesterday = findViewById(R.id.graph_before_yesterday);
 
-        Station station = (Station) getIntent().getSerializableExtra("station");
+        // Days for which we will present plots
+        final int TODAY = getDayOfMonth(0);
+        final int YESTERDAY = getDayOfMonth(-1);
+        final int BEFORE_YESTERDAY = getDayOfMonth(-2);
 
+        // Data: pollutions and dates
+        Station station = (Station) getIntent().getSerializableExtra("station");
         Map<String, List<Double>> pollutions = station.getPollutions();
         Map<String, List<String>> dates = station.getDates();
 
-        final int SIZE = pollutions.get("PM2.5").size();
-        Map<Double, List<Double>> hoursForGivenDay = new LinkedHashMap<>();
-        Map<Double, List<Double>> pollutionsForGivenDay = new LinkedHashMap<>();
+        // Pollution's type to be added as separate lines
+        final String[] KEYS = {"PM2.5", "PM10", "C6H6"};
+        final int[] COLORS = {Color.RED, Color.BLUE, Color.BLACK};
 
-        int index = -1;
-        double currentDay = -1;
-        for (int i = 0; i < SIZE; i++) {
-            String date = formatDate(dates.get("PM2.5").get(i));
-            String[] parts = date.split(":");
-            double day = Double.parseDouble(parts[0]);
-            double hour = Double.parseDouble(parts[1]);
-            if (currentDay != day) {
-                currentDay = day;
-                index++;
-                hoursForGivenDay.put(day, new ArrayList<Double>());
-                pollutionsForGivenDay.put(day, new ArrayList<Double>());
+        // Maximum value of all pollutions [%]
+        double maxValuePercent = 0;
+
+        /**
+         * Iterating over keys
+         */
+        for (int key_index = 0; key_index < KEYS.length; key_index++) {
+
+            final String KEY = KEYS[key_index];
+            final int COLOR = COLORS[key_index];
+
+            // If data for specific key are not available - go to another key
+            if (pollutions.get(KEY).get(0) == POLLUTION_DEFAULT_VALUE) {
+                continue;
             }
-            hoursForGivenDay.get(day).add(hour);
-            pollutionsForGivenDay.get(day).add(pollutions.get("PM2.5").get(i));
-        }
 
-        LineGraphSeries<DataPoint> seriesToday = new LineGraphSeries<>();
-        LineGraphSeries<DataPoint> seriesYesterday = new LineGraphSeries<>();
-        LineGraphSeries<DataPoint> seriesBeforeYesterday = new LineGraphSeries<>();
+            // Data series (lines)
+            LineGraphSeries<DataPoint> seriesToday = new LineGraphSeries<>();
+            LineGraphSeries<DataPoint> seriesYesterday = new LineGraphSeries<>();
+            LineGraphSeries<DataPoint> seriesBeforeYesterday = new LineGraphSeries<>();
 
-        // for a given day:
+            final int SIZE = pollutions.get(KEY).size();
 
-        index = -1;
-        currentDay = -1;
-        for (Double day : hoursForGivenDay.keySet()) {
-            // New data points
-            DataPoint[] points = new DataPoint[hoursForGivenDay.get(day).size()];
-            // Reverse order
-            Collections.reverse(hoursForGivenDay.get(day));
-            Collections.reverse(pollutionsForGivenDay.get(day));
-            // Adding data
-            for (int i = 0; i < hoursForGivenDay.get(day).size(); i++) {
-                points[i] = new DataPoint(hoursForGivenDay.get(day).get(i),
-                        pollutionsForGivenDay.get(day).get(i));
+            // Maps that contains data for specific day
+            // Order is crucial because we will later plot them
+            Map<Integer, List<Integer>> hoursForGivenDay = new LinkedHashMap<>();
+            Map<Integer, List<Double>> pollutionsForGivenDay = new LinkedHashMap<>();
+
+            /**
+             * Retrieving data in reverse (growing with time) order
+             * The oldest data will be at the beginning
+             */
+            for (int i = SIZE - 1; i >= 0; i--) {
+                String[] parts = separateDate(dates.get(KEY).get(i)); // TODO: more efficient
+                int day = Integer.parseInt(parts[0]);
+                int hour = Integer.parseInt(parts[1]);
+                double value = pollutions.get(KEY).get(i);
+                try {
+                    hoursForGivenDay.get(day).add(hour); // TODO: more efficient
+                    pollutionsForGivenDay.get(day).add(value); // TODO: more efficient
+                } catch (NullPointerException e) {
+                    hoursForGivenDay.put(day, new ArrayList<>(Arrays.asList(hour)));
+                    pollutionsForGivenDay.put(day, new ArrayList<>(Arrays.asList(value)));
+                }
             }
-            if (currentDay != day) {
-                currentDay = day;
-                index++;
-            }
-            switch(index){
-                case 0:
+
+            /**
+             * Filling series with data
+             */
+            for (int day : hoursForGivenDay.keySet()) {
+                List<Integer> hours = hoursForGivenDay.get(day); // TODO: more efficient
+                List<Double> values = pollutionsForGivenDay.get(day); // TODO: more efficient
+                final int SIZE_DAY = hours.size();
+                // New data points
+                DataPoint[] points = new DataPoint[SIZE_DAY];
+                // Adding data to data points
+                for (int i = 0; i < SIZE_DAY; i++) {
+                    double percentValue = transformValueToPercent(values.get(i), KEY);
+                    if (percentValue > maxValuePercent) {
+                        maxValuePercent = percentValue;
+                    }
+                    points[i] = new DataPoint(hours.get(i), percentValue);
+                }
+                // TODO: enums
+                if (day == TODAY) {
                     seriesToday = new LineGraphSeries<>(points);
-                    break;
-                case 1:
+                } else if (day == YESTERDAY) {
+
                     seriesYesterday = new LineGraphSeries<>(points);
-                    break;
-                case 2:
+                } else if (day == BEFORE_YESTERDAY) {
                     seriesBeforeYesterday = new LineGraphSeries<>(points);
-                    break;
+                }
             }
+
+            // Adding lines to the plots
+            seriesToday.setColor(COLOR);
+            graph_today.addSeries(seriesToday);
+            seriesYesterday.setColor(COLOR);
+            graph_yesterday.addSeries(seriesYesterday);
+            seriesBeforeYesterday.setColor(COLOR);
+            graph_before_yesterday.addSeries(seriesBeforeYesterday);
         }
 
-        // styling series
-        seriesToday.setColor(Color.BLUE);
-        graph_today.addSeries(seriesToday);
-        graph_today.getViewport().setMinX(0);
-        graph_today.getViewport().setMaxX(23);
-        graph_today.getViewport().setXAxisBoundsManual(true);
+        // Adding horizontal lines with 100% values
+        LineGraphSeries<DataPoint> series100percent = new LineGraphSeries<>(new DataPoint[]{
+                new DataPoint(0, 100),
+                new DataPoint(23, 100)
+        });
+        series100percent.setDrawBackground(true);
+        series100percent.setThickness(0);
+        series100percent.setColor(Color.GRAY);
+        series100percent.setBackgroundColor(Color.argb(50, 0, 200, 0));
+        graph_today.addSeries(series100percent);
+        graph_yesterday.addSeries(series100percent);
+        graph_before_yesterday.addSeries(series100percent);
 
-        seriesYesterday.setColor(Color.BLUE);
-        graph_yesterday.addSeries(seriesYesterday);
-        graph_yesterday.getViewport().setMinX(0);
-        graph_yesterday.getViewport().setMaxX(23);
-        graph_yesterday.getViewport().setXAxisBoundsManual(true);
-
-        seriesBeforeYesterday.setColor(Color.BLUE);
-        graph_before_yesterday.addSeries(seriesBeforeYesterday);
-        graph_before_yesterday.getViewport().setMinX(0);
-        graph_before_yesterday.getViewport().setMaxX(23);
-        graph_before_yesterday.getViewport().setXAxisBoundsManual(true);
+        // Resizing graph
+        int maxSizeY = roundPollutionValue(maxValuePercent);
+        resizeGraph(graph_today, maxSizeY);
+        resizeGraph(graph_yesterday, maxSizeY);
+        resizeGraph(graph_before_yesterday, maxSizeY);
     }
 
     /**
-     * Formats date
+     * Rounds pollution value
      */
-    String formatDate(String oldDateString) {
+    private int roundPollutionValue(double maxValue) {
+        if (maxValue < 200) {
+            return 200; // 100% line must be always visible
+        } else if (maxValue >= 200 && maxValue < 1000) {
+            return (int) Math.ceil(maxValue / 100.) * 100;
+        } else {
+            return (int) Math.ceil(maxValue / 1000.) * 1000;
+        }
+    }
+
+    /**
+     * Returns day of month
+     */
+    private int getDayOfMonth(int i) {
+        Calendar cal = Calendar.getInstance();
+        if (i == 0) {
+            return cal.get(Calendar.DAY_OF_MONTH);
+        } else {
+            cal.add(Calendar.DATE, i);
+            Date date = cal.getTime();
+            DateFormat dateFormat = new SimpleDateFormat("dd");
+            return Integer.parseInt(dateFormat.format(date));
+        }
+    }
+
+    /**
+     * Day and hour separation
+     */
+    String[] separateDate(String oldDateString) {
 
         // Old date format
         DateFormat oldFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -127,10 +194,41 @@ public class PlotActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
+        // New date format
         DateFormat newFormat = new SimpleDateFormat("dd:HH");
         String newDateString = newFormat.format(oldDate);
-        return newDateString;
+        // Day and hour separation
+        String[] parts = newDateString.split(":");
+
+        return parts;
     }
 
+    private double transformValueToPercent(double value, String key) {
+        switch (key) {
+            case "PM2.5":
+                return 100. * value / PollutionNorms.NORM_PM25;
+            case "PM10":
+                return 100. * value / PollutionNorms.NORM_PM10;
+            case "C6H6":
+                return 100. * value / PollutionNorms.NORM_C6H6;
+            case "SO2":
+                return 100. * value / PollutionNorms.NORM_SO2;
+            case "NO2":
+                return 100. * value / PollutionNorms.NORM_NO2;
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * Changes size of graphs
+     */
+    private void resizeGraph(GraphView graph, int maxY) {
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(23);
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(maxY);
+        graph.getViewport().setYAxisBoundsManual(true);
+    }
 }
