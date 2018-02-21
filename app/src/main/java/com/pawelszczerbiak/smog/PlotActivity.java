@@ -5,7 +5,9 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -28,6 +30,7 @@ import static com.pawelszczerbiak.smog.PollutionType.C6H6;
 import static com.pawelszczerbiak.smog.PollutionType.PM10;
 import static com.pawelszczerbiak.smog.PollutionType.PM25;
 import static com.pawelszczerbiak.smog.QueryUtils.POLLUTION_DEFAULT_VALUE;
+import static com.pawelszczerbiak.smog.StationAdapter.*;
 
 public class PlotActivity extends AppCompatActivity {
 
@@ -48,10 +51,18 @@ public class PlotActivity extends AppCompatActivity {
 
         // Pollution's type to be added as separate lines
         final PollutionType[] POLLUTION_TYPES = {PM25, PM10, C6H6};
-        final int[] COLORS = {rgb(153,0,76), Color.BLUE, Color.BLACK};
+        final int[] COLORS = {rgb(153, 0, 76), Color.BLUE, Color.BLACK};
 
         // Maximum value of all pollutions [%]
         double maxValuePercent = 0;
+
+        // Views to be changed
+        TextView locationView = findViewById(R.id.locationInPlot);
+        TextView locationTypeView = findViewById(R.id.locationTypeInPlot);
+        String locationType = station.getLocationType();
+        locationView.setText(station.getLocation());
+        locationTypeView.setText(getLocationTypeText(locationType));
+        locationTypeView.setTextColor(ContextCompat.getColor(getApplicationContext(), getLocationTypeColor(locationType)));
 
         /**
          * Iterating over keys
@@ -117,7 +128,7 @@ public class PlotActivity extends AppCompatActivity {
                     }
                     points[i] = new DataPoint(hours.get(i), percentValue);
                 }
-                switch (fromInt(day)){
+                switch (fromInt(day)) {
                     case TODAY:
                         seriesToday = new LineGraphSeries<>(points);
                         break;
@@ -149,7 +160,7 @@ public class PlotActivity extends AppCompatActivity {
         graph_yesterday.addSeries(series100percent);
         graph_before_yesterday.addSeries(series100percent);
 
-        // Adding "danger" line
+        // Adding "danger" lines
 
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -180,7 +191,9 @@ public class PlotActivity extends AppCompatActivity {
         if (maxValue < 400) {
             return 400; // 100% line must be always visible
         } else {
-            return (int) Math.ceil(maxValue / 100.) * 100;
+            int res = (int) Math.ceil(maxValue / 100.) * 100;
+            return (res % 200 == 0) ? res : res + 100;
+
         }
     }
 

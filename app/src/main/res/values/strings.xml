@@ -10,4 +10,7 @@
     <string name="stringBeskidyWschodnie">Beskidy Wsch.</string>
     <string name="stringSudety">Sudety</string>
     <string name="stringJura">Jura</string>
+    <string name="stringToday">dzisiaj</string>
+    <string name="stringYesterday">wczoraj</string>
+    <string name="stringBeforeYesterday">przedwczoraj</string>
 </resources>

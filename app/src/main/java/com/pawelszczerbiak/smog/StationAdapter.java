@@ -223,8 +223,9 @@ public class StationAdapter extends ArrayAdapter<Station> {
 
     /**
      * Gives color for specific location's type
+     * TODO: Method used also in PlotActivity
      */
-    private int getLocationTypeColor(String locationType) {
+    static int getLocationTypeColor(String locationType) {
         switch (locationType) {
             case DataRepository.IMPORTANT_CITIES:
                 return R.color.colorImportantCities;
@@ -245,8 +246,9 @@ public class StationAdapter extends ArrayAdapter<Station> {
 
     /**
      * Gives text for specific location's type
+     * TODO: Method used also in PlotActivity
      */
-    private int getLocationTypeText(String locationType) {
+     static int getLocationTypeText(String locationType) {
         switch (locationType) {
             case DataRepository.IMPORTANT_CITIES:
                 return R.string.stringImportantCities;

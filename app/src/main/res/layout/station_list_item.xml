@@ -51,7 +51,7 @@
             android:layout_marginRight="6dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="Kraków ul.Bujaka"
+            android:text="Kraków ul. Bujaka"
             android:textColor="@color/textColorLocation"
             android:textSize="16sp" />
     </LinearLayout>
