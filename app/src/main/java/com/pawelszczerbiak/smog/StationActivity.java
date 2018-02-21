@@ -51,9 +51,9 @@ public class StationActivity extends AppCompatActivity implements LoaderManager.
                 activeNetwork.isConnectedOrConnecting();
 
         // Create a list of stations
-        ListView stationListView = (ListView) findViewById(R.id.list);
+        ListView stationListView = findViewById(R.id.list);
 
-        mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
+        mEmptyStateTextView = findViewById(R.id.empty_view);
         stationListView.setEmptyView(mEmptyStateTextView);
 
         if (isConnected == false) {

@@ -1,8 +1,6 @@
 package com.pawelszczerbiak.smog;
 
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,10 +16,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.pawelszczerbiak.smog.PollutionType.C6H6;
+import static com.pawelszczerbiak.smog.PollutionType.PM10;
+import static com.pawelszczerbiak.smog.PollutionType.PM25;
 import static com.pawelszczerbiak.smog.QueryUtils.POLLUTION_DEFAULT_VALUE;
 
 public class PlotActivity extends AppCompatActivity {
@@ -43,11 +44,11 @@ public class PlotActivity extends AppCompatActivity {
 
         // Data: pollutions and dates
         Station station = (Station) getIntent().getSerializableExtra("station");
-        Map<String, List<Double>> pollutions = station.getPollutions();
-        Map<String, List<String>> dates = station.getDates();
+        Map<PollutionType, List<Double>> pollutionsMap = station.getPollutions();
+        Map<PollutionType, List<String>> datesMap = station.getDates();
 
         // Pollution's type to be added as separate lines
-        final String[] KEYS = {"PM2.5", "PM10", "C6H6"};
+        final PollutionType[] POLLUTION_TYPES = {PM25, PM10, C6H6};
         final int[] COLORS = {Color.RED, Color.BLUE, Color.BLACK};
 
         // Maximum value of all pollutions [%]
@@ -56,13 +57,17 @@ public class PlotActivity extends AppCompatActivity {
         /**
          * Iterating over keys
          */
-        for (int key_index = 0; key_index < KEYS.length; key_index++) {
+        for (int type_index = 0; type_index < POLLUTION_TYPES.length; type_index++) {
 
-            final String KEY = KEYS[key_index];
-            final int COLOR = COLORS[key_index];
+            final PollutionType POLLUTION_TYPE = POLLUTION_TYPES[type_index];
+            final int COLOR = COLORS[type_index];
+
+            // Dates for specific key
+            // Using full map is not efficient
+            List<String> datesForGivenKey = datesMap.get(POLLUTION_TYPE);
 
             // If data for specific key are not available - go to another key
-            if (pollutions.get(KEY).get(0) == POLLUTION_DEFAULT_VALUE) {
+            if (pollutionsMap.get(POLLUTION_TYPE).get(0) == POLLUTION_DEFAULT_VALUE) {
                 continue;
             }
 
@@ -71,25 +76,25 @@ public class PlotActivity extends AppCompatActivity {
             LineGraphSeries<DataPoint> seriesYesterday = new LineGraphSeries<>();
             LineGraphSeries<DataPoint> seriesBeforeYesterday = new LineGraphSeries<>();
 
-            final int SIZE = pollutions.get(KEY).size();
+            final int SIZE = pollutionsMap.get(POLLUTION_TYPE).size();
 
             // Maps that contains data for specific day
             // Order is crucial because we will later plot them
-            Map<Integer, List<Integer>> hoursForGivenDay = new LinkedHashMap<>();
-            Map<Integer, List<Double>> pollutionsForGivenDay = new LinkedHashMap<>();
+            Map<Integer, List<Integer>> hoursForGivenDay = new HashMap<>();
+            Map<Integer, List<Double>> pollutionsForGivenDay = new HashMap<>();
 
             /**
              * Retrieving data in reverse (growing with time) order
              * The oldest data will be at the beginning
              */
             for (int i = SIZE - 1; i >= 0; i--) {
-                String[] parts = separateDate(dates.get(KEY).get(i)); // TODO: more efficient
+                String[] parts = separateDate(datesForGivenKey.get(i));
                 int day = Integer.parseInt(parts[0]);
                 int hour = Integer.parseInt(parts[1]);
-                double value = pollutions.get(KEY).get(i);
+                double value = pollutionsMap.get(POLLUTION_TYPE).get(i);
                 try {
-                    hoursForGivenDay.get(day).add(hour); // TODO: more efficient
-                    pollutionsForGivenDay.get(day).add(value); // TODO: more efficient
+                    hoursForGivenDay.get(day).add(hour);
+                    pollutionsForGivenDay.get(day).add(value);
                 } catch (NullPointerException e) {
                     hoursForGivenDay.put(day, new ArrayList<>(Arrays.asList(hour)));
                     pollutionsForGivenDay.put(day, new ArrayList<>(Arrays.asList(value)));
@@ -100,14 +105,14 @@ public class PlotActivity extends AppCompatActivity {
              * Filling series with data
              */
             for (int day : hoursForGivenDay.keySet()) {
-                List<Integer> hours = hoursForGivenDay.get(day); // TODO: more efficient
-                List<Double> values = pollutionsForGivenDay.get(day); // TODO: more efficient
+                List<Integer> hours = hoursForGivenDay.get(day);
+                List<Double> values = pollutionsForGivenDay.get(day);
                 final int SIZE_DAY = hours.size();
                 // New data points
                 DataPoint[] points = new DataPoint[SIZE_DAY];
                 // Adding data to data points
                 for (int i = 0; i < SIZE_DAY; i++) {
-                    double percentValue = transformValueToPercent(values.get(i), KEY);
+                    double percentValue = transformValueToPercent(values.get(i), POLLUTION_TYPE);
                     if (percentValue > maxValuePercent) {
                         maxValuePercent = percentValue;
                     }
@@ -154,7 +159,7 @@ public class PlotActivity extends AppCompatActivity {
     }
 
     /**
-     * Rounds pollution value
+     * Rounds pollution's value
      */
     private int roundPollutionValue(double maxValue) {
         if (maxValue < 200) {
@@ -203,17 +208,17 @@ public class PlotActivity extends AppCompatActivity {
         return parts;
     }
 
-    private double transformValueToPercent(double value, String key) {
+    private double transformValueToPercent(double value, PollutionType key) {
         switch (key) {
-            case "PM2.5":
+            case PM25:
                 return 100. * value / PollutionNorms.NORM_PM25;
-            case "PM10":
+            case PM10:
                 return 100. * value / PollutionNorms.NORM_PM10;
-            case "C6H6":
+            case C6H6:
                 return 100. * value / PollutionNorms.NORM_C6H6;
-            case "SO2":
+            case SO2:
                 return 100. * value / PollutionNorms.NORM_SO2;
-            case "NO2":
+            case NO2:
                 return 100. * value / PollutionNorms.NORM_NO2;
             default:
                 return 0;

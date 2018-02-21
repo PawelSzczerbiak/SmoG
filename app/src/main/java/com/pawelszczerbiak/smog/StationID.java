@@ -4,16 +4,16 @@ import java.util.List;
 
 /**
  * An {@link StationID} object contains information
- * related to a single station type and ID data
+ * related to a single station pollutionType and ID data
  */
 public class StationID {
     private String location;
-    private String type;
+    private String locationType;
     private List<Integer> IDs;
 
-    public StationID(String location, String type, List<Integer> IDs) {
+    public StationID(String location, String locationType, List<Integer> IDs) {
         this.location = location;
-        this.type = type;
+        this.locationType = locationType;
         this.IDs = IDs;
     }
 
@@ -21,8 +21,8 @@ public class StationID {
         return location;
     }
 
-    public String getType() {
-        return type;
+    public String getLocationType() {
+        return locationType;
     }
 
     public List<Integer> getIDs() {

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -15,12 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +47,8 @@ public class StationAdapter extends ArrayAdapter<Station> {
         for (List<String> list : currentStation.getDates().values()) {
             dates.addAll(list);
         }
-        Map<String, List<Double>> pollutions = currentStation.getPollutions();
-        String type = currentStation.getType();
+        Map<PollutionType, List<Double>> pollutions = currentStation.getPollutions();
+        String locationType = currentStation.getLocationType();
 
         // Views to be changed
         TextView locationView = listItemView.findViewById(R.id.location);
@@ -60,9 +57,9 @@ public class StationAdapter extends ArrayAdapter<Station> {
         // LinearLayout stationInfoLayout = (LinearLayout) listItemView.findViewById(R.id.stationInfo);
         // stationInfoLayout.setBackgroundColor(ContextCompat.getColor(getContext(), getLayoutColor(type)));
         // NEW IDEA: Changes text and text color of the station's type label
-        TextView typeView = listItemView.findViewById(R.id.type);
-        typeView.setText(getTypeText(type));
-        typeView.setTextColor(ContextCompat.getColor(getContext(), getTypeColor(type)));
+        TextView typeView = listItemView.findViewById(R.id.locationType);
+        typeView.setText(getLocationTypeText(locationType));
+        typeView.setTextColor(ContextCompat.getColor(getContext(), getLocationTypeColor(locationType)));
 
         /**
          * Format data from current station: date
@@ -78,29 +75,29 @@ public class StationAdapter extends ArrayAdapter<Station> {
         /**
          *  Format data from current station: pollutions
          */
-        for (String key : pollutions.keySet()) {
+        for (PollutionType key : pollutions.keySet()) {
             switch (key) {
-                case "PM2.5":
+                case PM25:
                     changePollutionView(listItemView, pollutions.get(key).get(0),
                             R.id.val_PM25, R.id.label_PM25,
                             PollutionNorms.TABLE_REF_PM25, PollutionNorms.NORM_PM25);
                     break;
-                case "PM10":
+                case PM10:
                     changePollutionView(listItemView, pollutions.get(key).get(0),
                             R.id.val_PM10, R.id.label_PM10,
                             PollutionNorms.TABLE_REF_PM10, PollutionNorms.NORM_PM10);
                     break;
-                case "C6H6":
+                case C6H6:
                     changePollutionView(listItemView, pollutions.get(key).get(0),
                             R.id.val_C6H6, R.id.label_C6H6,
                             PollutionNorms.TABLE_REF_C6H6, PollutionNorms.NORM_C6H6);
                     break;
-                case "SO2":
+                case SO2:
                     changePollutionView(listItemView, pollutions.get(key).get(0),
                             R.id.val_SO2, R.id.label_SO2,
                             PollutionNorms.TABLE_REF_SO2, PollutionNorms.NORM_SO2);
                     break;
-                case "NO2":
+                case NO2:
                     changePollutionView(listItemView, pollutions.get(key).get(0),
                             R.id.val_NO2, R.id.label_NO2,
                             PollutionNorms.TABLE_REF_NO2, PollutionNorms.NORM_NO2);
@@ -227,8 +224,8 @@ public class StationAdapter extends ArrayAdapter<Station> {
     /**
      * Gives color for specific location's type
      */
-    private int getTypeColor(String type) {
-        switch (type) {
+    private int getLocationTypeColor(String locationType) {
+        switch (locationType) {
             case DataRepository.IMPORTANT_CITIES:
                 return R.color.colorImportantCities;
             case DataRepository.PODHALE:
@@ -249,8 +246,8 @@ public class StationAdapter extends ArrayAdapter<Station> {
     /**
      * Gives text for specific location's type
      */
-    private int getTypeText(String type) {
-        switch (type) {
+    private int getLocationTypeText(String locationType) {
+        switch (locationType) {
             case DataRepository.IMPORTANT_CITIES:
                 return R.string.stringImportantCities;
             case DataRepository.PODHALE:
