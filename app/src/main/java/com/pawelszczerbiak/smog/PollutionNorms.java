@@ -20,4 +20,11 @@ public final class PollutionNorms {
     public static final int[] TABLE_REF_C6H6 = new int[]{5, 10, 15, 20, 50};
     public static final int[] TABLE_REF_SO2 = new int[]{50, 100, 200, 350, 500};
     public static final int[] TABLE_REF_NO2 = new int[]{40, 100, 150, 200, 400};
+    // Danger values in % (used on plots)
+    public static final double DANGER_PM25 = 100.*TABLE_REF_PM25[3]/NORM_PM25;
+    public static final double DANGER_PM10 = 100.*TABLE_REF_PM10[3]/NORM_PM10;
+    public static final double DANGER_C6H6 = 100.*TABLE_REF_C6H6[3]/NORM_C6H6;
+    public static final double DANGER_SO2 = 100.*TABLE_REF_SO2[3]/NORM_SO2;
+    public static final double DANGER_NO2 = 100.*TABLE_REF_NO2[3]/NORM_NO2;
+    public static final double DANGER_VALUE_ARBITRARY = 400.;
 }

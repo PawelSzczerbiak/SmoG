@@ -1,6 +1,8 @@
 package com.pawelszczerbiak.smog;
 
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,12 +16,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.graphics.Color.rgb;
+import static com.pawelszczerbiak.smog.Day.fromInt;
+import static com.pawelszczerbiak.smog.PollutionNorms.DANGER_VALUE_ARBITRARY;
 import static com.pawelszczerbiak.smog.PollutionType.C6H6;
 import static com.pawelszczerbiak.smog.PollutionType.PM10;
 import static com.pawelszczerbiak.smog.PollutionType.PM25;
@@ -37,11 +41,6 @@ public class PlotActivity extends AppCompatActivity {
         GraphView graph_yesterday = findViewById(R.id.graph_yesterday);
         GraphView graph_before_yesterday = findViewById(R.id.graph_before_yesterday);
 
-        // Days for which we will present plots
-        final int TODAY = getDayOfMonth(0);
-        final int YESTERDAY = getDayOfMonth(-1);
-        final int BEFORE_YESTERDAY = getDayOfMonth(-2);
-
         // Data: pollutions and dates
         Station station = (Station) getIntent().getSerializableExtra("station");
         Map<PollutionType, List<Double>> pollutionsMap = station.getPollutions();
@@ -49,7 +48,7 @@ public class PlotActivity extends AppCompatActivity {
 
         // Pollution's type to be added as separate lines
         final PollutionType[] POLLUTION_TYPES = {PM25, PM10, C6H6};
-        final int[] COLORS = {Color.RED, Color.BLUE, Color.BLACK};
+        final int[] COLORS = {rgb(153,0,76), Color.BLUE, Color.BLACK};
 
         // Maximum value of all pollutions [%]
         double maxValuePercent = 0;
@@ -102,7 +101,7 @@ public class PlotActivity extends AppCompatActivity {
             }
 
             /**
-             * Filling series with data
+             * Filling series with data for specific day
              */
             for (int day : hoursForGivenDay.keySet()) {
                 List<Integer> hours = hoursForGivenDay.get(day);
@@ -118,14 +117,15 @@ public class PlotActivity extends AppCompatActivity {
                     }
                     points[i] = new DataPoint(hours.get(i), percentValue);
                 }
-                // TODO: enums
-                if (day == TODAY) {
-                    seriesToday = new LineGraphSeries<>(points);
-                } else if (day == YESTERDAY) {
-
-                    seriesYesterday = new LineGraphSeries<>(points);
-                } else if (day == BEFORE_YESTERDAY) {
-                    seriesBeforeYesterday = new LineGraphSeries<>(points);
+                switch (fromInt(day)){
+                    case TODAY:
+                        seriesToday = new LineGraphSeries<>(points);
+                        break;
+                    case YESTERDAY:
+                        seriesYesterday = new LineGraphSeries<>(points);
+                        break;
+                    case BEFORE_YESTERDAY:
+                        seriesBeforeYesterday = new LineGraphSeries<>(points);
                 }
             }
 
@@ -140,9 +140,7 @@ public class PlotActivity extends AppCompatActivity {
 
         // Adding horizontal lines with 100% values
         LineGraphSeries<DataPoint> series100percent = new LineGraphSeries<>(new DataPoint[]{
-                new DataPoint(0, 100),
-                new DataPoint(23, 100)
-        });
+                new DataPoint(0, 100), new DataPoint(23, 100)});
         series100percent.setDrawBackground(true);
         series100percent.setThickness(0);
         series100percent.setColor(Color.GRAY);
@@ -150,6 +148,23 @@ public class PlotActivity extends AppCompatActivity {
         graph_today.addSeries(series100percent);
         graph_yesterday.addSeries(series100percent);
         graph_before_yesterday.addSeries(series100percent);
+
+        // Adding "danger" line
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setStrokeWidth(6);
+        paint.setColor(Color.RED);
+        paint.setPathEffect(new DashPathEffect(new float[]{5, 5}, 0));
+
+        LineGraphSeries<DataPoint> seriesDangerPercent = new LineGraphSeries<>(new DataPoint[]{
+                new DataPoint(0, DANGER_VALUE_ARBITRARY), new DataPoint(23, DANGER_VALUE_ARBITRARY)});
+        seriesDangerPercent.setDrawAsPath(true);
+        seriesDangerPercent.setCustomPaint(paint);
+
+        graph_today.addSeries(seriesDangerPercent);
+        graph_yesterday.addSeries(seriesDangerPercent);
+        graph_before_yesterday.addSeries(seriesDangerPercent);
 
         // Resizing graph
         int maxSizeY = roundPollutionValue(maxValuePercent);
@@ -162,27 +177,10 @@ public class PlotActivity extends AppCompatActivity {
      * Rounds pollution's value
      */
     private int roundPollutionValue(double maxValue) {
-        if (maxValue < 200) {
-            return 200; // 100% line must be always visible
-        } else if (maxValue >= 200 && maxValue < 1000) {
+        if (maxValue < 400) {
+            return 400; // 100% line must be always visible
+        } else {
             return (int) Math.ceil(maxValue / 100.) * 100;
-        } else {
-            return (int) Math.ceil(maxValue / 1000.) * 1000;
-        }
-    }
-
-    /**
-     * Returns day of month
-     */
-    private int getDayOfMonth(int i) {
-        Calendar cal = Calendar.getInstance();
-        if (i == 0) {
-            return cal.get(Calendar.DAY_OF_MONTH);
-        } else {
-            cal.add(Calendar.DATE, i);
-            Date date = cal.getTime();
-            DateFormat dateFormat = new SimpleDateFormat("dd");
-            return Integer.parseInt(dateFormat.format(date));
         }
     }
 

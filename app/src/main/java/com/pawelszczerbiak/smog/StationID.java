@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * An {@link StationID} object contains information
- * related to a single station pollutionType and ID data
+ * related to a single station type and ID data
  */
 public class StationID {
     private String location;
