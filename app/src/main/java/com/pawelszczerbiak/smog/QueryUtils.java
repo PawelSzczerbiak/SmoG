@@ -45,7 +45,7 @@ public class QueryUtils {
 
     public static List<Station> extractStations(String URL_BASE) {
 
-        // List of stations' IDs
+        // List of stations IDs
         final List<StationID> stationIDs = DataRepository.getStationIDs();
         // List of stations to be returned
         final List<Station> stations = new ArrayList<>();
@@ -166,7 +166,6 @@ public class QueryUtils {
         for (String jsonResponse : jsonResponses) {
             try {
                 JSONObject root = new JSONObject(jsonResponse);
-                // possibilities: PM2.5, PM10, SO2, NO2, C6H6
                 PollutionType pollutionType = fromString(root.getString("key"));
                 JSONArray values = root.getJSONArray("values");
                 // values for specific dates (we retrieve up to 10)
@@ -176,7 +175,7 @@ public class QueryUtils {
                         String date = value.getString("date");
                         dates.get(pollutionType).add(date); // TODO: more efficient
                         double val = value.getDouble("value");
-                        // Replacing the first element
+                        // Replace the first element
                         if (pollutions.get(pollutionType).get(0) == POLLUTION_DEFAULT_VALUE) {
                             pollutions.get(pollutionType).set(0, val);
                         } else {
@@ -193,7 +192,7 @@ public class QueryUtils {
     }
 
     /**
-     * Initialize pollutions for a given station with negative values
+     * Initializes pollutions for a given station with negative values
      */
     private static void initializeMaps(Map<PollutionType, List<Double>> pollutions, Map<PollutionType, List<String>> dates) {
         pollutions.put(PM25, new ArrayList<>(Arrays.asList(POLLUTION_DEFAULT_VALUE)));

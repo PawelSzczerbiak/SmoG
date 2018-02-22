@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
-                android:id="@+id/locationType"
+                android:id="@+id/location_type"
                 android:layout_width="@dimen/textWidthTypeLabel"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -29,7 +29,7 @@
                 android:maxLines="1"
                 android:text="@string/stringBeskidyWschodnie"
                 android:textColor="@color/textColorLocation"
-                android:textSize="12sp" />
+                android:textSize="12dp" />
 
             <TextView
                 android:id="@+id/date"
@@ -41,7 +41,7 @@
                 android:text="16:00"
                 android:textAllCaps="true"
                 android:textColor="@color/textColorDate"
-                android:textSize="12sp" />
+                android:textSize="12dp" />
         </LinearLayout>
 
         <TextView
@@ -53,7 +53,7 @@
             android:maxLines="2"
             android:text="Kraków ul. Bujaka"
             android:textColor="@color/textColorLocation"
-            android:textSize="16sp" />
+            android:textSize="16dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -85,7 +85,7 @@
             android:gravity="center"
             android:text="@string/no_data"
             android:textColor="@color/textColorValueDefault"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -117,7 +117,7 @@
             android:gravity="center"
             android:text="@string/no_data"
             android:textColor="@color/textColorValueDefault"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -149,7 +149,7 @@
             android:gravity="center"
             android:text="@string/no_data"
             android:textColor="@color/textColorValueDefault"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -181,7 +181,7 @@
             android:gravity="center"
             android:text="@string/no_data"
             android:textColor="@color/textColorValueDefault"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -213,7 +213,7 @@
             android:gravity="center"
             android:text="@string/no_data"
             android:textColor="@color/textColorValueDefault"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
     </LinearLayout>
 
 </LinearLayout>

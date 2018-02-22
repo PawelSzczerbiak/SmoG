@@ -41,7 +41,7 @@ public class StationAdapter extends ArrayAdapter<Station> {
 
         final Station currentStation = getItem(position);
 
-        // We join all dates' lists together
+        // Join all dates lists together
         // The first value, if exists, will be displayed on the screen
         List<String> dates = new ArrayList<>();
         for (List<String> list : currentStation.getDates().values()) {
@@ -57,7 +57,7 @@ public class StationAdapter extends ArrayAdapter<Station> {
         // LinearLayout stationInfoLayout = (LinearLayout) listItemView.findViewById(R.id.stationInfo);
         // stationInfoLayout.setBackgroundColor(ContextCompat.getColor(getContext(), getLayoutColor(type)));
         // NEW IDEA: Changes text and text color of the station's type label
-        TextView typeView = listItemView.findViewById(R.id.locationType);
+        TextView typeView = listItemView.findViewById(R.id.location_type);
         typeView.setText(getLocationTypeText(locationType));
         typeView.setTextColor(ContextCompat.getColor(getContext(), getLocationTypeColor(locationType)));
 

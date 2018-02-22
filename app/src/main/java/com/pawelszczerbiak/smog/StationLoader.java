@@ -35,7 +35,7 @@ public class StationLoader extends AsyncTaskLoader<List<Station>> {
             return null;
         }
 
-        // Perform the network request, parse the response, and extract a list of stations.
+        // Perform the network request, parse the response, and extract a list of stations
         List<Station> stations = QueryUtils.extractStations(mUrl);
         return stations;
     }

@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.graphics.Color.rgb;
 import static com.pawelszczerbiak.smog.Day.fromInt;
 import static com.pawelszczerbiak.smog.PollutionNorms.DANGER_VALUE_ARBITRARY;
 import static com.pawelszczerbiak.smog.PollutionType.C6H6;
@@ -39,26 +38,26 @@ public class PlotActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.plot_activity);
 
+        Station station = (Station) getIntent().getSerializableExtra("station");
+
         // Available graphs (plots)
         GraphView graph_today = findViewById(R.id.graph_today);
         GraphView graph_yesterday = findViewById(R.id.graph_yesterday);
         GraphView graph_before_yesterday = findViewById(R.id.graph_before_yesterday);
 
         // Data: pollutions and dates
-        Station station = (Station) getIntent().getSerializableExtra("station");
         Map<PollutionType, List<Double>> pollutionsMap = station.getPollutions();
         Map<PollutionType, List<String>> datesMap = station.getDates();
 
-        // Pollution's type to be added as separate lines
+        // Pollution type that are added as separate lines
         final PollutionType[] POLLUTION_TYPES = {PM25, PM10, C6H6};
-        final int[] COLORS = {rgb(153, 0, 76), Color.BLUE, Color.BLACK};
 
-        // Maximum value of all pollutions [%]
+        // Maximal value of all pollutions [%]
         double maxValuePercent = 0;
 
-        // Views to be changed
-        TextView locationView = findViewById(R.id.locationInPlot);
-        TextView locationTypeView = findViewById(R.id.locationTypeInPlot);
+        // Location name and type views
+        TextView locationView = findViewById(R.id.location_plot);
+        TextView locationTypeView = findViewById(R.id.location_type_plot);
         String locationType = station.getLocationType();
         locationView.setText(station.getLocation());
         locationTypeView.setText(getLocationTypeText(locationType));
@@ -70,10 +69,10 @@ public class PlotActivity extends AppCompatActivity {
         for (int type_index = 0; type_index < POLLUTION_TYPES.length; type_index++) {
 
             final PollutionType POLLUTION_TYPE = POLLUTION_TYPES[type_index];
-            final int COLOR = COLORS[type_index];
+            final int COLOR = getLineColor(POLLUTION_TYPE);
 
             // Dates for specific key
-            // Using full map is not efficient
+            // - use of full map is not efficient
             List<String> datesForGivenKey = datesMap.get(POLLUTION_TYPE);
 
             // If data for specific key are not available - go to another key
@@ -94,7 +93,7 @@ public class PlotActivity extends AppCompatActivity {
             Map<Integer, List<Double>> pollutionsForGivenDay = new HashMap<>();
 
             /**
-             * Retrieving data in reverse (growing with time) order
+             * Retrieve data in reverse (growing with time) order
              * The oldest data will be at the beginning
              */
             for (int i = SIZE - 1; i >= 0; i--) {
@@ -112,7 +111,7 @@ public class PlotActivity extends AppCompatActivity {
             }
 
             /**
-             * Filling series with data for specific day
+             * Fill series with data for specific day
              */
             for (int day : hoursForGivenDay.keySet()) {
                 List<Integer> hours = hoursForGivenDay.get(day);
@@ -120,7 +119,7 @@ public class PlotActivity extends AppCompatActivity {
                 final int SIZE_DAY = hours.size();
                 // New data points
                 DataPoint[] points = new DataPoint[SIZE_DAY];
-                // Adding data to data points
+                // Add data to data points
                 for (int i = 0; i < SIZE_DAY; i++) {
                     double percentValue = transformValueToPercent(values.get(i), POLLUTION_TYPE);
                     if (percentValue > maxValuePercent) {
@@ -140,7 +139,7 @@ public class PlotActivity extends AppCompatActivity {
                 }
             }
 
-            // Adding lines to the plots
+            // Add lines to the plots
             seriesToday.setColor(COLOR);
             graph_today.addSeries(seriesToday);
             seriesYesterday.setColor(COLOR);
@@ -149,7 +148,7 @@ public class PlotActivity extends AppCompatActivity {
             graph_before_yesterday.addSeries(seriesBeforeYesterday);
         }
 
-        // Adding horizontal lines with 100% values
+        // Add horizontal lines with 100% values
         LineGraphSeries<DataPoint> series100percent = new LineGraphSeries<>(new DataPoint[]{
                 new DataPoint(0, 100), new DataPoint(23, 100)});
         series100percent.setDrawBackground(true);
@@ -160,7 +159,7 @@ public class PlotActivity extends AppCompatActivity {
         graph_yesterday.addSeries(series100percent);
         graph_before_yesterday.addSeries(series100percent);
 
-        // Adding "danger" lines
+        // Add danger line
 
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -177,7 +176,7 @@ public class PlotActivity extends AppCompatActivity {
         graph_yesterday.addSeries(seriesDangerPercent);
         graph_before_yesterday.addSeries(seriesDangerPercent);
 
-        // Resizing graph
+        // Resize graph
         int maxSizeY = roundPollutionValue(maxValuePercent);
         resizeGraph(graph_today, maxSizeY);
         resizeGraph(graph_yesterday, maxSizeY);
@@ -185,7 +184,7 @@ public class PlotActivity extends AppCompatActivity {
     }
 
     /**
-     * Rounds pollution's value
+     * Rounds pollution value
      */
     private int roundPollutionValue(double maxValue) {
         if (maxValue < 400) {
@@ -219,8 +218,11 @@ public class PlotActivity extends AppCompatActivity {
         return parts;
     }
 
-    private double transformValueToPercent(double value, PollutionType key) {
-        switch (key) {
+    /**
+     * Transforms pollution value to percent
+     */
+    private double transformValueToPercent(double value, PollutionType type) {
+        switch (type) {
             case PM25:
                 return 100. * value / PollutionNorms.NORM_PM25;
             case PM10:
@@ -237,7 +239,7 @@ public class PlotActivity extends AppCompatActivity {
     }
 
     /**
-     * Changes size of graphs
+     * Changes graphs size
      */
     private void resizeGraph(GraphView graph, int maxY) {
         graph.getViewport().setMinX(0);
@@ -246,5 +248,20 @@ public class PlotActivity extends AppCompatActivity {
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(maxY);
         graph.getViewport().setYAxisBoundsManual(true);
+    }
+
+    /**
+     * Gives line color for a given pollution type
+     */
+    private int getLineColor(PollutionType type) {
+        switch (type) {
+            case PM25:
+                return getResources().getColor(R.color.colorLinePM25);
+            case PM10:
+                return getResources().getColor(R.color.colorLinePM10);
+            case C6H6:
+                return getResources().getColor(R.color.colorLineC6H6);
+        }
+        return 0;
     }
 }

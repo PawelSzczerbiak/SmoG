@@ -17,8 +17,8 @@ import java.util.List;
 public class StationActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Station>> {
 
     /**
-     * Constant value for the station loader ID. We can choose any integer.
-     * This really only comes into play if you're using multiple loaders.
+     * Constant value for the station loader ID. We can choose any integer
+     * This really only comes into play if you're using multiple loaders
      */
     private static final int STATION_LOADER_ID = 1;
 
@@ -26,7 +26,8 @@ public class StationActivity extends AppCompatActivity implements LoaderManager.
      * URL with JSON data
      * At the end of the URL id must be added (see @extractStations method)
      */
-    private static final String URL_BASE = "http://api.gios.gov.pl/pjp-api/rest/data/getData/";
+    private static final String URL_BASE =
+            "http://api.gios.gov.pl/pjp-api/rest/data/getData/";
 
     /**
      * Adapter for the list of stations

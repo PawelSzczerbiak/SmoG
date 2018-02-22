@@ -5,11 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Contains stations' data
+ * Contains stations data
  */
 public class DataRepository {
 
-    // List of stations' IDs to be added to the URL
+    // Private constructor - no one should ever create an object of this class
+    private DataRepository() {
+    }
+
+    // List of stations IDs that are added to the URL
     private static List<StationID> stationIDs = new ArrayList<>();
 
     // Location types
@@ -22,6 +26,7 @@ public class DataRepository {
 
     static {
         /**
+         * List of stations
          * Locations are displayed on the screen according to their insertions below
          */
         stationIDs.add(new StationID("Kraków ul. Bujaka", IMPORTANT_CITIES, Arrays.asList(2772, 2770, 17896, 2774, 2766)));
@@ -56,10 +61,6 @@ public class DataRepository {
 //        stationIDs.add(new StationID("Trzebinia",JURA, Arrays.asList(3123, 3127, 3120)));
 //        stationIDs.add(new StationID("Olkusz",JURA, Arrays.asList(2976)));
 //        stationIDs.add(new StationID("Starachowice",JURA, Arrays.asList(17249)));
-    }
-
-    // Private constructor - no one should ever create an object of this class
-    private DataRepository() {
     }
 
     public static List<StationID> getStationIDs() {

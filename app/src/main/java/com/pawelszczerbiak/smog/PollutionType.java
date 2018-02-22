@@ -21,6 +21,5 @@ public enum PollutionType {
         }
         return null;
     }
-
 }
 

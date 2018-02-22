@@ -37,12 +37,18 @@
     <!-- Default ext color for the air quality value -->
     <color name="textColorValueDefault">#707B7C</color>
 
-    <!-- Colors for different locations' types -->
+    <!-- Colors for different location types -->
     <color name="colorImportantCities">#c1203b</color>
     <color name="colorPodhale">#e2bf0d</color>
     <color name="colorBeskidyZachodnie">#5773d6</color>
     <color name="colorBeskidyWschodnie">#c65319</color>
     <color name="colorSudety">#58b107</color>
     <color name="colorJura">#82755c</color>
+
+    <!-- Lines colors -->
+    <color name="colorLinePM25">#99004C</color>
+    <color name="colorLinePM10">#0000FF</color>
+    <color name="colorLineC6H6">#000000</color>
+
 
 </resources>
